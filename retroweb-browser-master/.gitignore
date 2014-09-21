@@ -1,0 +1,24 @@
+# Executable
+*.exe
+
+# Disk images
+*.dsk
+*.DSK
+*.image
+*.img
+*.qed
+*.gz
+*.raw
+
+# ROM images
+*.rom
+*.zip
+
+# Private stuff
+private
+browser-tests
+disks
+cassettes
+articles
+artwork
+.htaccess

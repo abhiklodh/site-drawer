@@ -1,0 +1,176 @@
+@charset "UTF-8";
+/* CSS Document */
+
+
+html {
+	height: 100%;
+}
+
+
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #1a1d24;
+	height: 100%;
+	
+	-webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
+	
+	color: #fff;
+	font: 12px "Cabin Condensed", Helvetica, Arial, sans-serif;
+	overflow: hidden;
+}
+
+a {
+	color: #fff;
+	text-decoration: none;
+}
+
+
+
+a:hover {
+	color: #fff;
+	text-decoration: none;
+}
+.imageLink:hover {
+	background: none;
+	background-color: none;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+
+
+
+#vert {
+	width: 100%;
+	height: 100%;
+	min-height: 680px;
+	display: table;
+}
+
+
+
+#noiseLayer {
+	background-image: url(images/noise1.html);
+	background-repeat: repeat;
+	
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	opacity:0.05;
+    filter:alpha(opacity=5); /* For IE8 and earlier */
+	
+}
+#sharing {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 65px;
+	opacity:0;
+    filter:alpha(opacity=0); /* For IE8 and earlier */
+}
+
+#share-buttons img {
+width: 90px;
+height: 50px;
+padding: 5px;
+border: 0;
+box-shadow: 0;
+display: inline;
+}
+
+.twitter {
+	float: left;
+	height: 65px;
+	width: 105px;
+	overflow: hidden;
+}
+
+.fb-like {
+	float: left;
+	height: 65px;
+	width: 115px;
+	overflow: hidden;
+}
+
+#subHead {
+	padding-bottom: 40px;
+	border-bottom: 1px solid #000;
+	margin-bottom: 40px;
+}
+
+#left {
+	width: 440px;
+	float: left;
+	margin-bottom: 40px;
+	text-align: left;
+}
+
+#right {
+	width: 440px;
+	float: right;
+	margin-bottom: 40px;
+	text-align: left;
+}
+
+div#preload { display: none; }
+
+#footer {
+	clear: both;
+	border-top: 1px solid #000;
+	text-align: center;
+	margin-bottom: 120px;
+	padding: 40px;
+}
+
+#container {
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#layerA {
+	min-width: 480px;
+}
+
+#content {
+	margin: 0 auto;
+	width: 920px;
+	text-align: center;
+}
+
+*.unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}

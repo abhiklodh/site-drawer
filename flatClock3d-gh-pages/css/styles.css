@@ -1,0 +1,83 @@
+@font-face {
+    font-family: "Orbitron";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Orbitron-Light"), local("Orbitron-Regular");
+    src: url(http://themes.googleusercontent.com/static/fonts/orbitron/v3/qhIa0Jl7ziRjUBxIWMni1_esZW2xOQ-xsNqO47m55DA.eot),
+         url(http://themes.googleusercontent.com/static/fonts/orbitron/v3/94ug0rEgQO_WuI_xKJMFc_esZW2xOQ-xsNqO47m55DA.woff) format("woff"),
+         url(http://themes.googleusercontent.com/static/fonts/orbitron/v3/qhIa0Jl7ziRjUBxIWMni1_esZW2xOQ-xsNqO47m55DA.eot) format("embedded-opentype");
+}
+
+* {
+    margin:0;
+    padding:0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    background-color:#026873;
+    color: white;
+    color: rgba(255, 255, 255, 0.9);   
+}
+
+a,
+a:visited {
+    color: rgba(200, 200, 200, 0.9);
+    text-decoration:none;
+}
+a:hover {
+    color:rgba(0,0,0,.8);
+}
+
+/* ------- Fancy CSS3 background example ------ */
+/* http://leaverou.me/css3patterns/#cicada-stripes */
+
+body {
+    background-image:linear-gradient(0,rgba(255,255,255,.07) 50%,transparent 50%),linear-gradient(0,rgba(255,255,255,.13) 50%,transparent 50%),linear-gradient(0,transparent 50%,rgba(255,255,255,.17) 50%),linear-gradient(0,transparent 50%,rgba(255,255,255,.19) 50%);
+    background-image:-webkit-linear-gradient(0,rgba(255,255,255,.07) 50%,transparent 50%),-webkit-linear-gradient(0,rgba(255,255,255,.13) 50%,transparent 50%),-webkit-linear-gradient(0,transparent 50%,rgba(255,255,255,.17) 50%),-webkit-linear-gradient(0,transparent 50%,rgba(255,255,255,.19) 50%);
+    background-image:-moz-linear-gradient(0pt 50% ,rgba(255,255,255,0.07) 50%,transparent 50%),-moz-linear-gradient(0pt 50% ,rgba(255,255,255,0.13) 50%,transparent 50%),-moz-linear-gradient(0pt 50% ,transparent 50%,rgba(255,255,255,0.17) 50%),-moz-linear-gradient(0pt 50% ,transparent 50%,rgba(255,255,255,0.19) 50%);
+    background-image:o-linear-gradient(0,rgba(255,255,255,.07) 50%,transparent 50%),o-linear-gradient(0,rgba(255,255,255,.13) 50%,transparent 50%),-o-linear-gradient(0,transparent 50%,rgba(255,255,255,.17) 50%),-o-linear-gradient(0,transparent 50%,rgba(255,255,255,.19) 50%);
+    background-image:-ms-linear-gradient(0,rgba(255,255,255,.07) 50%,transparent 50%),-ms-linear-gradient(0,rgba(255,255,255,.13) 50%,transparent 50%),-ms-linear-gradient(0,transparent 50%,rgba(255,255,255,.17) 50%),-ms-linear-gradient(0,transparent 50%,rgba(255,255,255,.19) 50%);
+    background-size:13px, 29px, 37px, 53px;
+}
+
+/* ------- DEMOS LINKS ------ */
+    
+.ctrls {
+    display:block;
+    position:absolute;
+    font: 12px "Orbitron", arial, sans;
+    z-index:10;
+}
+    #infos {
+        top:10px;
+        left:10px;
+    }
+    
+    #emboss {
+        left:10px;
+        bottom:70px;
+    }
+    #xray {
+        left:10px;
+        bottom:50px;
+    }
+    #d3 {
+        left:10px;
+        bottom:30px;
+    }
+    #toggleView {
+        left:10px;
+        bottom:10px;
+    }
+    
+    #twitter {
+        right:10px;
+        bottom:10px;
+    }

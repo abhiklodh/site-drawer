@@ -1,0 +1,97 @@
+###############################################################
+# Option 1) Use apache mod_deflate to compress files on-the-fly
+#
+#  Pros:
+#    - Server will negotiate whether compression is used, hence
+#      full browser compatibility
+#  Cons:
+#    - Puts a CPU load on the webserver
+###############################################################
+
+# compress text, html, javascript, css, xml:
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/json
+
+# compress disk images
+<FilesMatch "\.(image|img|pimg|qed|pfdc|st|dsk|prg|psi|adf|cas)$">
+SetOutputFilter DEFLATE
+</FilesMatch>
+
+###############################################################
+# Option 2) Use pre-compressed gzip files
+#
+#  Pros:
+#    - No CPU overhead on the server
+#  Cons:
+#    - If compatibility with browsers that do not support compression
+#      is desired, then the uncompressed files must also be provided
+#      alongside the compressed files
+#
+#  Reference:
+#    - http://blog.codegrill.org/2009/07/how-to-pre-compress-static-files-in.html
+###############################################################
+
+AddEncoding x-gzip .gz
+
+# Netscape 4.x has some problems... only compress html files
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+# Netscape 4.06-4.08 has problems... don't compress anything
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+# MSIE masquerades as Netscape
+BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+
+RewriteEngine on
+
+# If the browser accepts gzip and the requested file exists with
+# a .gz appended, then rewrite the request to the .gz file
+RewriteCond %{HTTP:Accept-Encoding} gzip
+RewriteCond %{REQUEST_FILENAME}.gz -f
+RewriteRule (.*\.(css|js|image|img|pimg|qed|pfdc|st|dsk|prg|psi|adf|cas))$ $1\.gz [L]
+
+#Set content type to JavaScript and the encoding to gzip
+<FilesMatch ".*\.js\.gz$">
+        ForceType application/x-javascript
+        Header set Content-Encoding gzip
+</FilesMatch>
+
+#Set content type to CSS and the encoding to gzip
+<FilesMatch ".*\.css\.gz$">
+        ForceType text/css
+        Header set Content-Encoding gzip
+</FilesMatch>
+
+# Tell caching proxy servers to cache the file based on both
+# browser type and encoding
+Header append Vary User-Agent
+Header append Vary Accept-Encoding
+
+# Do this to set proper ETags for server clusters
+FileETag MTime Size
+
+###############################################################
+# Enable server side includes (used for Google Analytics)
+###############################################################
+AddHandler server-parsed .html
+
+###############################################################
+# Required for correct handling of JSON files
+###############################################################
+AddType application/json .json
+
+###############################################################
+# Redirect access to /articles/* to the main page, except when
+# a .wiki extension is used
+###############################################################
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/(articles|docs)/.*\.wiki
+RewriteRule ^(articles|docs)/ index.html [L]

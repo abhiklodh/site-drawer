@@ -1,0 +1,26 @@
+{
+  "version": "0.1",
+  "name": "FFBrowser",
+  "description": "Minimalistic Web Browser For Boot2Gecko",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/icon.png",
+    "48": "/icon.png",
+    "128": "/icon.png"
+  },
+  "developer": {
+    "name": "Nishan Bajracharya"
+  },
+  "default_locale": "en",
+  "type": "privileged",
+  "permissions": {
+    "browser": {
+      "description": "Browser API"
+    },
+    "embed-apps": {},
+    "device-storage:sdcard": {
+      "access": "readwrite"
+    },
+    "webapps-manage": {}
+  }
+}

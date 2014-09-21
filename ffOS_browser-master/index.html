@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" manifest="offline.appcache">
+<head>
+	<meta charset="UTF-8">
+	<title>FFBrowser</title>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="system/style/browser.css">
+	<script src="system/script/jquery.min.js"></script>
+	<script src="system/script/browser.js"></script>
+</head>
+<body>
+	<div id="main">
+		<header>
+			<form id="navigation">
+				<button id="btn_pre" class="nav arrow"><img src="system/images/left.png" alt=""></button>
+				<button id="btn_nex" class="nav arrow"><img src="system/images/right.png" alt=""></button>
+				<button id="stop" class="nav arrow"><img src="system/images/reload.png"></button>
+				<input type="text" id="url" placeholder="Search or Enter URL">
+				<button id="go" class="go">Go</button>
+				<button id="btn_add_t" class="nav"><img src="system/images/menu.png" alt=""></button>
+			</form>
+		</header>
+		<div id="container">
+			<iframe src="homepage.html" frameborder="0" id="b_iframe" name="b_iframe" mozbrowser></iframe>
+		</div>
+		<div id="loading"></div>
+	</div>
+	<div id="sidebar">
+		<ul class="list">
+			<li id="s_sp">Start Page</li>
+			<li id="s_ab">Add Bookmark</li>
+			<li id="s_bo">Bookmarks</li>
+			<li id="s_hi">History</li>
+			<li id="s_pr">Preferences</li>
+			<li id="s_nm">Dark Theme<span>OFF</span></li>
+			<li id="s_fm">Fullscreen Mode<span>OFF</span></li>
+			<li id="s_at">About</li>
+		</ul>
+	</div>
+	<div id="hist" class="preFull">
+		<strong><p>History <button style="color:#eee" class="nav" id="clrHst">Clear</button><button id="close">x</button></p></strong>
+		<ul class="list"></ul>
+	</div>
+	<div id="book" class="preFull">
+		<strong><p>Bookmarks <button id="close">x</button></p></strong>
+		<ul class="list"></ul>
+	</div>
+	<div id="preferences" class="preFull">
+		<strong><p>Preferences <button id="close">x</button></p></strong>
+	</div>
+	<div id="about" class="preFull">
+		<strong><p>About <button id="close">x</button></p></strong>
+		<center>
+			<br>
+			<h3>FFBrowser</h3>
+			<p>ver 0.1</p>
+			Developed By : Nishan Bajracharya
+			<br><br>
+			<img src="icon.png" alt="">
+			<br><br>
+			<p>A simple minimalistic web browser for Boot2Gecko operation system.</p>
+			<p align="left"><strong>Features to implement : </strong></p>
+			<ul class="list">
+				<li>Tabbed Browsing</li>
+				<li>Night Mode</li>
+				<li>Themes</li>
+				<li>Download Manager</li>
+				<li>Cloud Synchronization</li>
+			</ul>
+			<br>
+			<p align="left"><strong>License : </strong></p>
+			<ul class="list">
+				<li id="l_gnu">GNU General Public License v2</li>
+			</ul>
+		</center>
+	</div>
+	<div id="loading-screen">
+		Browser
+	</div>
+	<div id="error">
+		Error
+	</div>
+</body>
+</html>

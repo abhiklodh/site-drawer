@@ -1,0 +1,422 @@
+/*
+    // Mutli-screen flat 3D analogue clock (V2.7) with jQuery & CSS3 - No image, no webGL
+    // By molokoloco@gmail.com 05/2013
+    
+    // Demo :http://molokoloco.github.io/flatClock3d/
+    
+    // Infos :http://www.b2bweb.fr/coding-project/mutli-screen-flat-3d-analogue-clock-with-jquery-and-css3-v2-3/
+    // GitHub sources :https://github.com/molokoloco/flatClock3d
+    // jsFiddle 2D :http://jsfiddle.net/molokoloco/V2rFN/
+    // jsFiddle + 3D :http://jsfiddle.net/molokoloco/x6yc3/
+
+    // Colors :easy to change, Sizes and positions :more tricky
+    // Colors are based on a white semi-transparent theme :
+    // replace "255,255,255" by "0,0,0" to blackify... or wathever you want
+    // Mostly elements that need to be centered... are centered in JS,
+    // So only kee in mind your SIZES ((---MOD---))
+*/
+
+/*
+Debug:
+   div { border:1px solid rgba(0,0,0,0.5); }
+*/
+
+/* ------- Clock container : SIZES ------ */
+
+#content {
+    width:260px; /* GLobale cloack size */
+    height:260px;
+    position:relative;
+}
+
+#rotator, /* layered and wrapped inside content */
+#shadowBox,
+#shadow,
+#clock,
+#clockBack,
+#reflet,
+#refletBack { 
+    position:absolute; /* or fixed */
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border-radius:50%;
+}
+
+#clockBorder { /* Contract borders cylinder inside clock, because it's a polygon not so smooth */
+    position:absolute;
+    top:1px;
+    left:1px;
+    right:1px;
+    bottom:1px;
+}
+    .side { /* fake polygones cylinder  (50 DIVs tesselation) */
+        position:absolute;
+        top:0;
+        left:0;
+        width:17px; /* value setted by hand to join all in a circle, given the number */
+        height:10px; /* this is the height (extrusion) */
+        background:#026873;
+    }
+
+/* Create renderLayer objects but are a 3D translateZ fallback */
+#rotator { z-index:1; border-radius:0; } /* As we do not need radius : perf gain */
+#shadowBox { z-index:0; border-radius:0; }
+
+#reflet { z-index:10; }
+#clock { z-index:9; }
+#clockBorder { z-index:8; }
+#clockBack { z-index:7; }
+#refletBack { z-index:6; }
+
+/* ------- 3D Rotate Animation smoothing ------ */
+
+.smoothTransTransition {
+    -webkit-transition:-webkit-transform 400ms ease-in-out;
+    -moz-transition:-moz-transform 400ms ease-in-out;
+    -ms-transition:-ms-transform 400ms ease-in-out;
+    -o-transition:-o-transform 400ms ease-in-out;
+    transition:transform 400ms ease-in-out;
+}
+
+/* ------- 3D Rotate Animation ------ */
+
+#content { 
+    -webkit-transform-origin:0 0; /* #content auto-scaled SCENE in main.js */
+    -moz-transform-origin:0 0;
+    -ms-transform-origin:0 0;
+    -o-transform-origin:0 0;
+    transform-origin:0 0;
+    
+    -webkit-perspective:700px; /* focale */
+    -moz-perspective:700px;
+    -ms-perspective:700px;
+    -o-perspective:700px;
+    perspective:700px;
+    
+    -webkit-transform-style:preserve-3d;
+    -moz-transform-style:preserve-3d;
+    -ms-transform-style:preserve-3d;
+    -o-transform-style:preserve-3d;
+    transform-style:preserve-3d;
+    
+    /*-webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    -o-user-select:none;
+    user-select:none;
+    pointer-events:none;*/
+}
+
+#rotator, #shadowBox { /* Our two main rotated elements */
+    -webkit-transform-origin:130px 130px;
+    -moz-transform-origin:130px 130px;
+    -ms-transform-origin:130px 130px;
+    -o-transform-origin:130px 130px;
+    transform-origin:130px 130px;
+    
+    -webkit-transform-style:preserve-3d;
+    -moz-transform-style:preserve-3d;
+    -ms-transform-style:preserve-3d;
+    -o-transform-style:preserve-3d;
+    transform-style:preserve-3d;
+}
+
+#rotator {
+    -webkit-transform:translateZ(0);
+    -moz-transform:translateZ(0);
+    -ms-transform:translateZ(0);
+    -o-transform:translateZ(0);
+    transform:translateZ(0);
+}
+
+#shadowBox {
+    /* #shadow will be rotated by jquery.rotator3d.js and is translated here */
+    -webkit-transform:translate3d(65px,65px,-400px) rotateY(180deg) scale(1.6);
+    -moz-transform:translate3d(65px,65px,-400px) rotateY(180deg) scale(1.6);
+    -ms-transform:translate3d(65px,65px,-400px) rotateY(180deg) scale(1.6);
+    -o-transform:translate3d(65px,65px,-400px) rotateY(180deg) scale(1.6);
+    transform:translate3d(65px,65px,-400px) rotateY(180deg) scale(1.6);
+}
+
+#clock,
+#clockBack,
+#reflet,
+#refletBack,
+.side {
+    -webkit-backface-visibility:hidden;
+    -moz-backface-visibility:hidden;
+    -ms-backface-visibility:hidden;
+    -o-backface-visibility:hidden;
+    backface-visibility:hidden;
+    /*-webkit-transform-style:flat;
+    -moz-transform-style:flat;
+    -ms-transform-style:flat;
+    -o-transform-style:flat;
+    transform-style:flat;*/
+}
+
+#clockBack {
+    -webkit-transform:rotateY(180deg) translateZ(8px);
+    -moz-transform:rotateY(180deg) translateZ(8px);
+    -ms-transform:rotateY(180deg) translateZ(8px);
+    -o-transform:rotateY(180deg) translateZ(8px);
+    transform:rotateY(180deg) translateZ(8px);
+}
+
+#reflet {
+    -webkit-transform:translateZ(1px);
+    -moz-transform:translateZ(1px);
+    -ms-transform:translateZ(1px);
+    -o-transform:translateZ(1px);
+    transform:translateZ(1px);
+}
+
+#refletBack {
+    -webkit-transform:rotateY(-180deg) translateZ(9px);
+    -moz-transform:rotateY(-180deg) translateZ(9px);
+    -ms-transform:rotateY(-180deg) translateZ(9px);
+    -o-transform:rotateY(-180deg) translateZ(9px);
+    transform:rotateY(-180deg) translateZ(9px);
+}
+
+#clockBorder {
+    -webkit-transform:translateZ(-4px);
+    -moz-transform:translateZ(-4px);
+    -ms-transform:translateZ(-4px);
+    -o-transform:translateZ(-4px);
+    transform:translateZ(-4px);
+    -webkit-transform-style:preserve-3d;
+    -moz-transform-style:preserve-3d;
+    -ms-transform-style:preserve-3d;
+    -o-transform-style:preserve-3d;
+    transform-style:preserve-3d;
+}
+
+/* ------- Clock container : COLORS ------ */
+
+.xray * {
+    border-color:rgba(0, 0, 0, 0) !important;
+    outline:1px solid rgba(255, 255, 0, 0.75) !important;
+    background:rgba(200, 200, 200, 0.125) !important;
+    color:rgba(255, 255, 255, 0.5) !important;
+    -moz-box-shadow:none !important;
+    -webkit-box-shadow:none !important;
+    -ms-box-shadow:none !important;
+    -o-box-shadow:none !important;
+    -webkit-filter:none !important;
+    -moz-filter:none !important;
+    -ms-filter:none !important;
+    -o-filter:none !important;
+    filter:none !important;
+}
+
+#clock,
+#clockBack {
+    background:#026873;
+}
+    .emboss #clock,
+    .emboss #clockBack {
+        box-shadow:inset 0 0 2px rgba(0,0,0,.5);
+        -moz-box-shadow:inset 0 0 2px rgba(0,0,0,.5);
+        -webkit-box-shadow:inset 0 0 2px rgba(0,0,0,.5);
+        -ms-box-shadow:inset 0 0 2px rgba(0,0,0,.5);
+        -o-box-shadow:inset 0 0 2px rgba(0,0,0,.5);
+    }
+
+#shadow {
+    background:#000;
+    background:rgba(0,0,0,.15);
+    -moz-box-shadow:0 0 8px rgba(0,0,0,.2), inset 0 0 8px rgba(0,0,0,.1);
+    -webkit-box-shadow:0 0 8px rgba(0,0,0,.2), inset 0 0 8px rgba(0,0,0,.1);
+    -ms-box-shadow:0 0 8px rgba(0,0,0,.2), inset 0 0 8px rgba(0,0,0,.1);
+    -o-box-shadow:0 0 8px rgba(0,0,0,.2), inset 0 0 8px rgba(0,0,0,.1);
+    box-shadow:0 0 8px rgba(0,0,0,.2), inset 0 0 8px rgba(0,0,0,.1);
+}
+    .emboss #shadow {
+        -moz-box-shadow:none;
+        -webkit-box-shadow:none;
+        -ms-box-shadow:none;
+        -o-box-shadow:none;
+        box-shadow:none;
+        -webkit-filter:blur(5px);
+        -moz-filter:blur(5px);
+        -ms-filter:blur(5px);
+        -o-filter:blur(5px);
+        filter:blur(5px);
+    }
+
+/* background-position is animated by jquery.rotator3d.js */
+
+#reflet, 
+#refletBack { /* cf. http://www.colorzilla.com/gradient-editor/ */
+    background-image:-moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 49%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 100%);
+    background-image:-webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(49%,rgba(255,255,255,0.25)), color-stop(50%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)));
+    background-image:-webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.25) 49%,rgba(255,255,255,0) 50%,rgba(255,255,255,0) 100%);
+    background-image:-o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.25) 49%,rgba(255,255,255,0) 50%,rgba(255,255,255,0) 100%);
+    background-image:-ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.25) 49%,rgba(255,255,255,0) 50%,rgba(255,255,255,0) 100%);
+    background-image:linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.25) 49%,rgba(255,255,255,0) 50%,rgba(255,255,255,0) 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#00ffffff',GradientType=1 );
+    
+    background-repeat:repeat-y;
+    background-size:300px 300px; /* scaling the gradient */
+    background-position:center center;
+}
+    .emboss #reflet,
+    .emboss #refletBack {
+        background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC40MiIvPgogICAgPHN0b3Agb2Zmc2V0PSI4JSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwLjQyIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjcwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHJlY3QgeD0iLTUwIiB5PSItNTAiIHdpZHRoPSIxMDEiIGhlaWdodD0iMTAxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
+        background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.42) 8%, rgba(255,255,255,0) 70%, rgba(255,255,255,0) 100%);
+        background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.42)), color-stop(8%,rgba(255,255,255,0.42)), color-stop(70%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)));
+        background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.42) 0%,rgba(255,255,255,0.42) 8%,rgba(255,255,255,0) 70%,rgba(255,255,255,0) 100%);
+        background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.42) 0%,rgba(255,255,255,0.42) 8%,rgba(255,255,255,0) 70%,rgba(255,255,255,0) 100%);
+        background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.42) 0%,rgba(255,255,255,0.42) 8%,rgba(255,255,255,0) 70%,rgba(255,255,255,0) 100%);
+        background: radial-gradient(ellipse at center,  rgba(255,255,255,0.42) 0%,rgba(255,255,255,0.42) 8%,rgba(255,255,255,0) 70%,rgba(255,255,255,0) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6bffffff', endColorstr='#00ffffff',GradientType=1 );
+        
+		background-repeat:no-repeat;
+		background-size:360px 360px; /* scaling the gradient */
+		background-position:center center;
+		
+        box-shadow:inset 0 0 5px rgba(255, 255, 255, 0.2), inset 5px 10px 10px rgba(255, 255, 255, 0.2), inset -5px -10px 10px rgba(255, 255, 255, 0.2);
+        -o-box-shadow:inset 0 0 5px rgba(255, 255, 255, 0.2), inset 5px 10px 10px rgba(255, 255, 255, 0.2), inset -5px -10px 10px rgba(255, 255, 255, 0.2);
+        -webkit-box-shadow:inset 0 0 5px rgba(255, 255, 255, 0.2), inset 5px 10px 10px rgba(255, 255, 255, 0.2), inset -5px -10px 10px rgba(255, 255, 255, 0.2);
+        -moz-box-shadow:inset 0 0 5px rgba(255, 255, 255, 0.2), inset 5px 10px 10px rgba(255, 255, 255, 0.2), inset -5px -10px 10px rgba(255, 255, 255, 0.2);
+        -ms-box-shadow:inset 0 0 5px rgba(255, 255, 255, 0.2), inset 5px 10px 10px rgba(255, 255, 255, 0.2), inset -5px -10px 10px rgba(255, 255, 255, 0.2);
+    }
+
+/* ------- DIGITAL CLOCK - JS works with this elements ------ */
+
+div.innerCenter { /* Circle inside clock */
+    position:absolute;
+    z-index:2;
+    top:50%;
+    left:50%;
+    width:188px;
+    height:188px; /* (---MOD---) (Centered with margin by JS) */
+    border-radius:50%; /* (---MOD---) */
+    background:rgba(255, 255, 255, 0.16);
+}
+    .emboss div.innerCenter {
+        box-shadow:0 0 3px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.2);
+        -moz-box-shadow:0 0 3px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.2);
+        -webkit-box-shadow:0 0 3px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.2);
+        -ms-box-shadow:0 0 3px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.2);
+        -o-box-shadow:0 0 3px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+div.sec,
+div.min,
+div.hour {
+    position:absolute;
+    /* transition:all 200ms linear; // smooth, but rotate anticlockwise from 359° to 1° */
+}
+div.sec {
+    top:0;
+    width:2px; /* (---MOD---) second clockwise width */
+    z-index:10;
+}
+div.min {
+    top:0;
+    width:4px; /* (---MOD---) */
+    z-index:11;
+}
+div.hour {
+    top:0;
+    width:8px; /* (---MOD---) */
+    z-index:12;
+}
+div.sec div.clockwise {
+    top:36px;
+}
+
+div.min div.clockwise {
+    top:52px; /* (---MOD---) dist from clock border == clockwise height */
+}
+
+div.hour div.clockwise {
+    top:64px; /* (---MOD---) */
+}
+
+div.clockwise {
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:114px; /* (---MOD---) clockH/2 - 8 :center of the #clock, minus junction */
+    background:#FFF;
+    background:rgba(255, 255, 255, 0.4);
+    border-radius:4px;
+}
+    .emboss div.clockwise {
+        box-shadow:0 0 3px rgba(0, 0, 0, 0.25);
+        -moz-box-shadow:0 0 3px rgba(0, 0, 0, 0.25);
+        -webkit-box-shadow:0 0 3px rgba(0, 0, 0, 0.25);
+        -ms-box-shadow:0 0 3px rgba(0, 0, 0, 0.25);
+        -o-box-shadow:0 0 3px rgba(0, 0, 0, 0.25);
+    }
+
+div.digit {
+    position:absolute;
+    top:0;
+    left:0;
+    width:36px;
+    height:36px; /* (---MOD---) */
+    font:24px/36px 'Orbitron', arial, verdana, sans-serif; /* (---MOD---) */
+    text-align:center;
+    color:#FFF;
+    color:rgba(255, 255, 255, 0.33);
+}
+    .emboss div.digit {
+        text-shadow:0 0 2px rgba(255, 255, 255, 0.25);
+        /*
+        border-radius:50%;
+        box-shadow:inset 0 0 3px rgba(255,255,255,0.3);
+            -moz-box-shadow:inset 0 0 3px rgba(255,255,255,0.3);
+            -webkit-box-shadow:inset 0 0 3px rgba(255,255,255,0.3);
+            -ms-box-shadow:inset 0 0 3px rgba(255,255,255,0.3);
+            -o-box-shadow:inset 0 0 3px rgba(255,255,255,0.3)
+        */
+    }
+
+    .emboss div.digit,
+    .emboss div.time,
+    .emboss div.date {
+        font-smoothing:antialiased;
+        -webkit-font-smoothing:antialiased;
+        -moz-font-smoothing:antialiased;
+        -ms-font-smoothing:antialiased;
+        -o-font-smoothing:antialiased;
+        text-size-adjust:none;
+        -webkit-text-size-adjust:none;
+        -moz-text-size-adjust:none;
+        -ms-text-size-adjust:none;
+        -o-text-size-adjust:none;
+    }
+
+div.digit span {
+    /* 12,3,6 and 9 */
+    color:rgba(255, 255, 255, 0.9);
+}
+div.unit {
+    position:absolute;
+    top:0;
+    left:0;
+    width:2px;
+    height:8px; /* (---MOD---) */
+    background:rgba(255, 255, 255, 0.4);
+}
+div.time,
+div.date {
+    position:absolute;
+    top:152px;
+    left:0; /* (---MOD---) */
+    width:260px;
+    height:24px; /* (---MOD---) */
+    text-align:center;
+    font:16px/24px 'Orbitron', arial, verdana, sans-serif; /* (---MOD---) */
+    color:#FFF;
+    color:rgba(255, 255, 255, 0.33);
+}
+div.date {
+    top:170px; /* (---MOD---) */
+}
